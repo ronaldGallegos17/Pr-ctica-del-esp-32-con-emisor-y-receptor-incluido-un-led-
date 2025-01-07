@@ -1,0 +1,9 @@
+import network
+
+# Crear un objeto de la interfaz WiFi
+wlan = network.WLAN(network.STA_IF)
+
+# Obtener la dirección MAC
+mac_address = wlan.config('mac')
+
+print('Dirección MAC:', mac_address)
