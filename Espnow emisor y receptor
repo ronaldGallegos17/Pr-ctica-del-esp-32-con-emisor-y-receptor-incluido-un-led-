@@ -1,0 +1,38 @@
+#include <WiFi.h>
+#include <esp_now.h>
+
+// Dirección MAC del dispositivo receptor (cambiar por la real del dispositivo que recibe los datos)
+uint8_t broadcastAddress[] = {0x24, 0x6F, 0x28, 0x3F, 0xA9, 0xC0}; 
+
+void setup() {
+  Serial.begin(115200);
+
+  // Inicializar la conexión Wi-Fi en modo Estación (sin necesidad de conectarse a un router)
+  WiFi.mode(WIFI_STA);
+
+  // Inicializar ESP-NOW
+  if (esp_now_init() != ESP_OK) {
+    Serial.println("Error al inicializar ESP-NOW");
+    return;
+  }
+
+  // Agregar el dispositivo receptor
+  esp_now_peer_info_t peerInfo;
+  memcpy(peerInfo.peer_addr, broadcastAddress, 6);
+  peerInfo.channel = 0;  
+  peerInfo.encrypt = false;
+
+  if (esp_now_add_peer(&peerInfo) != ESP_OK) {
+    Serial.println("Error al agregar el dispositivo receptor");
+    return;
+  }
+
+  // Enviar datos
+  const char *message = "¡Hola desde ESP32!";
+  esp_now_send(broadcastAddress, (uint8_t *)message, strlen(message));
+}
+
+void loop() {
+  // Aquí podrías hacer cosas adicionales o esperar mensajes
+  delay(1000);
+}
