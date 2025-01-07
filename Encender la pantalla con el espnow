@@ -1,0 +1,37 @@
+import network
+import esp
+import time
+import machine
+import espnow
+import lcd1602
+
+# Configuración de la pantalla LCD (puedes ajustar según el modelo de tu pantalla)
+i2c = machine.I2C(scl=machine.Pin(22), sda=machine.Pin(21))
+lcd = lcd1602.LCD1602(i2c)
+
+# Inicializar ESP-NOW
+esp.now_init()
+
+# Dirección MAC del dispositivo emisor
+# Si no tienes la dirección MAC, usa un valor de broadcast
+broadcast_address = b'\xff\xff\xff\xff\xff\xff'
+
+# Preparar la pantalla LCD
+lcd.clear()
+lcd.set_cursor(0, 0)
+lcd.putstr("Esperando mensaje...")
+
+# Función para recibir los datos
+def recibir_datos(pin):
+    mensaje = esp.now_recv()
+    if mensaje:
+        lcd.clear()
+        lcd.set_cursor(0, 0)
+        lcd.putstr(f"Mensaje: {mensaje.decode('utf-8')}")
+
+# Configurar el pin para recibir los datos (puedes usar cualquier pin GPIO disponible)
+pin = machine.Pin(0, machine.Pin.IN, machine.Pin.PULL_UP)
+pin.irq(trigger=machine.Pin.IRQ_FALLING, handler=recibir_datos)
+
+while True:
+    time.sleep(1)
