@@ -1,0 +1,12 @@
+from RPLCD.i2c import CharLCD
+
+# Configurar la conexión con la pantalla LCD (usando la dirección I2C por defecto, 0x27)
+lcd = CharLCD('PCF8574', 0x27)
+
+# Limpiar la pantalla y escribir un mensaje
+lcd.clear()
+lcd.write_string('¡Hola, Mundo!')
+
+# Puedes ajustar el tiempo de espera para que el mensaje se vea antes de continuar
+import time
+time.sleep(5)  # Espera 5 segundos antes de finalizar
