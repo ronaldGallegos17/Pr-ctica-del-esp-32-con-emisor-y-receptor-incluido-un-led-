@@ -1,0 +1,19 @@
+import machine
+import time
+
+# Configuración del pin para el LED (GPIO2)
+led = machine.Pin(2, machine.Pin.OUT)
+
+# Configuración del pin para el botón (GPIO0)
+button = machine.Pin(0, machine.Pin.IN, machine.Pin.PULL_UP)
+
+# Variable para controlar el estado del LED
+led_state = False
+
+while True:
+    # Leer el estado del botón (0 si presionado, 1 si no presionado)
+    if button.value() == 0:  # El botón está presionado
+        led_state = not led_state  # Cambiar el estado del LED
+        led.value(led_state)  # Cambiar el estado del LED
+        time.sleep(0.3)  # Esperar un poco para evitar rebotes del botón
+    time.sleep(0.1)  # Esperar un poco para no saturar el procesador
